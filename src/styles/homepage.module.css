@@ -1,0 +1,28 @@
+.mainScreen {
+  display: none;
+  height: 100%;
+}
+
+@media (min-width: 1024px) {
+  .mainScreen {
+    background-color: white;
+    height: 100%;
+    display: block;
+  }
+}
+
+.userList {
+  background-color: var(--color-background);
+  height: 100%;
+  overflow-y: scroll;
+  width: 30rem;
+}
+
+.userTile {
+  cursor: pointer;
+}
+
+.userTile:hover {
+  background-color: var(--accent-3);
+  border-radius: var(--radius-3);
+}

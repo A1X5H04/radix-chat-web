@@ -1,0 +1,13 @@
+.container {
+  height: 100%;
+}
+
+.main {
+  height: 100%;
+}
+
+@media (min-width: 1024px) {
+  .main {
+    padding-left: 5rem;
+  }
+}

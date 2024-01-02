@@ -1,0 +1,44 @@
+.li {
+  margin-inline: 1rem;
+}
+
+.iconButton {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-bottom: 1px solid var(--accent-2);
+  margin: 15px;
+  color: var(--accent-7);
+}
+
+.iconButton[data-active="true"]::before {
+  content: "";
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 3px;
+  width: 3px;
+  border-radius: 0.5rem;
+  background-color: var(--accent-8);
+}
+
+.iconButton[data-active="true"] {
+  color: var(--accent-9);
+  scale: 2;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

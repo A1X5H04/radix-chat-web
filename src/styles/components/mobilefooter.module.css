@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  z-index: 40;
+  align-items: center;
+  width: 100%;
+  padding-inline: 3rem;
+  background-color: #ffffff;
+}
+
+.ul {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (min-width: 1024px) {
+  .container {
+    display: none;
+  }
+}

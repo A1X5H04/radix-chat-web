@@ -1,0 +1,40 @@
+.main {
+  display: none;
+  justify-content: space-between;
+}
+
+.navbar {
+  display: flex;
+  margin-top: 1rem;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ul {
+  display: flex;
+  margin-top: 0.25rem;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .main {
+    display: flex;
+    overflow-y: auto;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 40;
+    padding-bottom: 1rem;
+    flex-direction: column;
+    width: 5rem;
+    background-color: #ffffff;
+  }
+}
+@media (min-width: 1280px) {
+  .main {
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+  }
+}

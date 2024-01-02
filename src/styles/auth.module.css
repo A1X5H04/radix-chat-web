@@ -1,0 +1,24 @@
+.authContainer {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: grid;
+  place-content: center;
+  place-items: center;
+  background-color: "red";
+  background-image: url("/authbg.svg");
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.authModal {
+  padding: 1rem;
+  width: 25rem;
+}
+
+@media (max-width: 768px) {
+  /* Styles for screens up to 768px wide */
+  .authModal {
+    width: 20rem;
+  }
+}
