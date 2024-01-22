@@ -1,8 +1,12 @@
 import { useMemo } from "react";
 import { usePathname } from "next/navigation";
-import { BsChatSquareDotsFill } from "react-icons/bs";
-import { FaUserFriends } from "react-icons/fa";
-import { RiMegaphoneFill } from "react-icons/ri";
+import {
+  PiChatsTeardropFill,
+  PiUsersFill,
+  PiCircleDashedFill,
+  PiMegaphoneFill,
+  PiNotificationFill,
+} from "react-icons/pi";
 import useConversation from "./useConversation";
 
 const useRoutes = () => {
@@ -14,20 +18,26 @@ const useRoutes = () => {
       {
         label: "Chat",
         href: "/conversations",
-        icon: BsChatSquareDotsFill,
+        icon: PiChatsTeardropFill,
         active: pathname === "/conversations" || !!conversationId,
       },
       {
         label: "Users",
         href: "/users",
-        icon: FaUserFriends,
+        icon: PiUsersFill,
         active: pathname === "/users",
       },
       // {
-      //   label: "Broadcast",
-      //   href: "/broadcast",
-      //   icon: RiMegaphoneFill,
-      //   active: pathname === "/broadcast",
+      //   label: "Channels",
+      //   href: "/channels",
+      //   icon: PiMegaphoneFill,
+      //   active: pathname === "/channels",
+      // },
+      // {
+      //   label: "Stories",
+      //   href: "/stories",
+      //   icon: PiCircleDashedFill,
+      //   active: pathname === "/stories",
       // },
     ],
     [pathname, conversationId]

@@ -13,9 +13,18 @@ import { formatRelativeDate } from "@/libs/utils";
 interface ChatBodyProps {
   initialMessage: FullMessageType[];
   isInGroup: boolean | null;
+  selectMode: boolean;
+  // setSelectedMessages: (value: any) => void;
+  setEditMessage: (value: any) => void;
 }
 
-function ChatBody({ initialMessage, isInGroup }: ChatBodyProps) {
+function ChatBody({
+  initialMessage,
+  isInGroup,
+  selectMode,
+  setEditMessage,
+}: // setSelectedMessages,
+ChatBodyProps) {
   const { css, cx } = useStyles();
   const [messages, setMessages] = useState<FullMessageType[]>(initialMessage);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -29,7 +38,7 @@ function ChatBody({ initialMessage, isInGroup }: ChatBodyProps) {
     pusherClient.subscribe(conversationId);
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
 
-    const messageHandler = (message: FullMessageType) => {
+    const newMessageHandler = (message: FullMessageType) => {
       axios.post(`/api/conversations/${conversationId}/seen`);
 
       setMessages((prevMessages) => {
@@ -39,6 +48,18 @@ function ChatBody({ initialMessage, isInGroup }: ChatBodyProps) {
         return [...prevMessages, message];
       });
       bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    const updateMessageHandler = (message: FullMessageType) => {
+      console.log("updateMessageHandler", message);
+      setMessages((prevMessages) =>
+        prevMessages.map((currentMessage) => {
+          if (currentMessage.id === message.id) {
+            return message;
+          }
+          return currentMessage;
+        })
+      );
     };
 
     const seenMessageHandler = (message: FullMessageType) => {
@@ -52,11 +73,13 @@ function ChatBody({ initialMessage, isInGroup }: ChatBodyProps) {
       );
     };
 
-    pusherClient.bind("messages:new", messageHandler);
+    pusherClient.bind("messages:new", newMessageHandler);
+    pusherClient.bind("message:update", updateMessageHandler);
     pusherClient.bind("message:seen", seenMessageHandler);
     return () => {
       pusherClient.unsubscribe(conversationId);
-      pusherClient.unbind("messages:new", messageHandler);
+      pusherClient.unbind("messages:new", newMessageHandler);
+      pusherClient.bind("message:update", updateMessageHandler);
       pusherClient.unbind("message:seen", seenMessageHandler);
     };
   }, [conversationId]);
@@ -70,30 +93,48 @@ function ChatBody({ initialMessage, isInGroup }: ChatBodyProps) {
   );
 
   return (
-    <ScrollArea scrollbars="vertical">
-      <div
-        className={cx(
-          css({
+    <Box
+      className={css({
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+        backgroundColor: "var(--background)",
+        backgroundImage:
+          "url(https://web.telegram.org/a/chat-bg-pattern-dark.ad38368a9e8140d0ac7d.png)",
+        backgroundSize: "contain",
+        backgroundPosition: "center",
+        backgroundRepeat: "repeat",
+        backgroundAttachment: "fixed",
+        "@media (prefers-color-scheme: dark)": {
+          backgroundImage:
+            "url(https://web.telegram.org/a/chat-bg-pattern-light.ee148af944f6580293ae.png), ",
+        },
+      })}
+    >
+      <ScrollArea scrollbars="vertical">
+        <div
+          className={css({
             width: "100%",
             height: "100%",
             textAlign: "center",
             flex: 1,
             paddingInline: "var(--space-3)",
             paddingTop: "var(--space-3)",
-          })
-        )}
-      >
-        <div>
+          })}
+        >
           {groupedByDateMessages.map(([date, dateGroupedMessages]) => (
             <div key={date}>
-              <Badge variant="outline" radius="full" size="2" my="2">
+              <Badge variant="soft" radius="full" size="1" my="2">
                 {formatRelativeDate(date)}
               </Badge>
               {dateGroupedMessages.map((message, index) => (
                 <MessageTile
                   key={message.id}
                   message={message}
+                  selectMode={selectMode}
                   isInGroupChat={isInGroup}
+                  setEditMessage={setEditMessage}
+                  // setSelectedMessages={setSelectedMessages}
                   isLastInMessageGroup={
                     index === dateGroupedMessages.length - 1
                   }
@@ -102,9 +143,9 @@ function ChatBody({ initialMessage, isInGroup }: ChatBodyProps) {
             </div>
           ))}
         </div>
-      </div>
-      <div ref={bottomRef} />
-    </ScrollArea>
+        <div ref={bottomRef} />
+      </ScrollArea>
+    </Box>
   );
 }
 

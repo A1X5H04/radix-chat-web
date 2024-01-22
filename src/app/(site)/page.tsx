@@ -2,12 +2,35 @@
 
 import { Card, Container, Flex, Heading } from "@radix-ui/themes";
 import AuthForm from "./components/AuthForm";
-import styles from "@/styles/auth.module.css";
 import Image from "next/image";
+import { tss } from "tss-react";
+
+const registerStyles = tss.create({
+  authContainer: {
+    margin: 0,
+    padding: 0,
+    height: "100vh",
+    display: "grid",
+    placeContent: "center",
+    placeItems: "center",
+    backgroundImage: 'url("/authbg.svg")',
+    backgroundAttachment: "fixed",
+    backgroundSize: "cover",
+  },
+
+  authModal: {
+    padding: "1rem",
+    width: "25rem",
+    "@media screen and (max-width: 768px)": {
+      width: "20rem",
+    },
+  },
+});
 
 export default function Register() {
+  const { classes } = registerStyles();
   return (
-    <Container className={styles.authContainer}>
+    <Container className={classes.authContainer}>
       <Flex
         align="center"
         gap="2"
@@ -23,7 +46,7 @@ export default function Register() {
           Radix Chat
         </Heading>
       </Flex>
-      <Card m="2" className={styles.authModal}>
+      <Card m="2" className={classes.authModal}>
         <AuthForm />
       </Card>
     </Container>

@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Box, IconButton, Tooltip, Text } from "@radix-ui/themes";
-import { tss } from "tss-react";
+import { keyframes, tss } from "tss-react";
 
 interface DesktopItemProps {
   label: string;
@@ -24,26 +24,28 @@ const desktopItemStyles = tss.create({
     "&::before": {
       content: "''",
       position: "absolute",
+      width: "3px",
       top: "50%",
       transform: "translateY(-50%)",
-      left: -13,
-      width: "3px",
+      left: -5,
       borderTopRightRadius: "inherit",
       borderBottomRightRadius: "inherit",
-      height: "50%",
-      opacity: 0,
+      display: "none",
+      animation: `${keyframes`
+        from { height: 0%; }
+        to { height: 50%; }
+      `} 0.4s ease forwards`,
       backgroundColor: "var(--accent-11)",
-      transition: "opacity 4s ease",
     },
     "&:hover": {
       backgroundColor: "var(--gray-1)",
     },
     "&[data-active=true]": {
-      transform: "scale(1.2)",
+      transform: "scale(1.5)",
       color: "var(--accent-9)",
     },
     "&[data-active=true]::before": {
-      opacity: 1,
+      display: "block",
     },
   },
 

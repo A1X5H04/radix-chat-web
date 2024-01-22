@@ -1,16 +1,29 @@
 import { FullMessageType } from "@/types";
-import { Avatar, Flex, Text } from "@radix-ui/themes";
+import {
+  Avatar,
+  Checkbox,
+  ContextMenu,
+  AlertDialog,
+  Button,
+  Flex,
+  Text,
+} from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
-import { RxImage, RxPerson } from "react-icons/rx";
-import { animated, useSpring } from "@react-spring/web";
+import { animated } from "@react-spring/web";
 import { tss } from "tss-react";
 import { RiCheckDoubleFill, RiCheckFill } from "react-icons/ri";
-import Image from "next/image";
+import React from "react";
+import { PiStarFill } from "react-icons/pi";
+import ImageViewer from "@/components/ImageViewer";
+import MessageContextMenu from "@/components/MessageContextMenu";
 
 interface MessageTileProps {
   message: FullMessageType;
   isInGroupChat: boolean | null;
   isLastInMessageGroup?: boolean;
+  selectMode: boolean;
+  setEditMessage: (value: any) => void;
+  // setSelectedMessages: (value: any) => void;
 }
 
 const messageTileStyles = tss
@@ -18,12 +31,14 @@ const messageTileStyles = tss
   .create(({ isMe }) => ({
     messageTile: {
       textAlign: isMe ? "right" : "left",
-      marginBlock: "var(--space-1)",
+      paddingBlock: "var(--space-1)",
+      paddingInline: "var(--space-2)",
     },
 
     messageContainer: {
       width: "75%",
       marginInline: "var(--space-2)",
+      userSelect: "none",
     },
 
     messageBubble: {
@@ -32,7 +47,7 @@ const messageTileStyles = tss
       backgroundColor: isMe ? "var(--accent-9)" : "var(--accent-3)",
       color: isMe ? "var(--accent-9-contrast)" : "inherit",
       borderRadius: "var(--radius-5)",
-      padding: "0.25rem 0.75rem",
+      padding: "0.25rem 0.50rem",
     },
 
     messageText: {
@@ -49,8 +64,8 @@ const messageTileStyles = tss
     },
 
     messageImageBubble: {
-      width: "300px",
-      height: "250px",
+      maxWidth: "350px",
+      maxHeight: "200px",
       backgroundColor: isMe ? "var(--accent-9)" : "var(--accent-5)",
       padding: "var(--space-1)",
       borderRadius: "var(--radius-5)",
@@ -66,6 +81,7 @@ const messageTileStyles = tss
         width: "100%",
         height: "100%",
         objectFit: "cover",
+        cursor: "pointer",
       },
     },
 
@@ -73,21 +89,20 @@ const messageTileStyles = tss
       position: "absolute",
       bottom: "var(--space-1)",
       right: "var(--space-1)",
-      display: "flex",
+      display: "inline-flex",
       alignItems: "center",
       color: "var(--color-text)",
       fontSize: "calc(0.65rem * var(--scaling))",
       fontWeight: 400,
       margin: 0,
       backgroundColor: "var(--color-background)",
-      padding: "2px 4px",
+      padding: "2px 6px",
       borderRadius: "var(--radius-5)",
       marginInline: "2px",
       gap: "2px",
     },
 
     messageDate: {
-      alignSelf: "flex-end",
       whiteSpace: "nowrap",
       color: "inherit",
       fontSize: "calc(0.65rem * var(--scaling))",
@@ -96,12 +111,21 @@ const messageTileStyles = tss
       margin: 0,
     },
 
+    messageStar: {
+      color: "inherit",
+      margin: 0,
+      marginRight: "2px",
+      lineHeight: 0,
+    },
+
     messageMeta: {
       height: "100%",
       display: "inline-flex",
-      alignItems: "end",
+      alignItems: "center",
       float: "right",
-      margin: "0.5rem -0.25rem 0 0.6375rem ",
+      fontSize: "calc(0.65rem * var(--scaling))",
+      fontWeight: 400,
+      margin: "0.50rem 0 -0.10rem 0.75rem ",
       bottom: "auto",
       right: "auto",
       gap: "2px",
@@ -118,8 +142,12 @@ function MessageTile({
   message,
   isLastInMessageGroup,
   isInGroupChat,
-}: MessageTileProps) {
+  // selectMode,
+  setEditMessage,
+}: // setSelectedMessages,
+MessageTileProps) {
   const session = useSession();
+  const [isContextMenuOpen, setIsContextMenuOpen] = React.useState(false);
   const isMe = session?.data?.user?.email === message?.sender?.email;
 
   const seenList = (message.seen || [])
@@ -144,58 +172,97 @@ function MessageTile({
 
   const { classes } = messageTileStyles({ isMe });
   return (
-    <Flex className={classes.messageTile} justify={isMe ? "end" : "start"}>
-      {isInGroupChat && <Avatar fallback="A" />}
-      <Flex
-        justify={isMe ? "end" : "start"}
-        className={classes.messageContainer}
-      >
-        {message.body ? (
-          <animated.div className={classes.messageBubble}>
-            <div className={classes.messageText}>
-              {message.body}
-              <div className={classes.messageMeta}>
-                <Text
-                  title={message.createdAt.toLocaleString()}
-                  className={classes.messageDate}
-                >
-                  {formattedDate}
-                </Text>
-                {isMe && (
-                  <p className={classes.messageSeenIndicator}>
-                    {hasSeen ? <RiCheckDoubleFill /> : <RiCheckFill />}
-                  </p>
-                )}
-              </div>
-            </div>
-          </animated.div>
-        ) : (
-          <animated.div className={classes.messageImageBubble}>
-            <div className={classes.messageImage}>
-              <Image
-                src={message.image || "/images/placeholder.png"}
-                layout="fill"
-                objectFit="cover"
-                alt="Message Image"
-              />
-              <div className={classes.messageImageStatus}>
-                <Text
-                  title={message.createdAt.toLocaleString()}
-                  className={classes.messageDate}
-                >
-                  {formattedDate}
-                </Text>
-                {isMe && (
-                  <p className={classes.messageSeenIndicator}>
-                    {hasSeen ? <RiCheckDoubleFill /> : <RiCheckFill />}
-                  </p>
-                )}
-              </div>
-            </div>
-          </animated.div>
-        )}
-      </Flex>
-    </Flex>
+    <ContextMenu.Root onOpenChange={setIsContextMenuOpen}>
+      <label>
+        <Flex
+          className={classes.messageTile}
+          justify={isMe ? "end" : "start"}
+          align="center"
+        >
+          {/* {selectMode && <Checkbox />} */}
+
+          <Flex
+            justify={!isMe ? "start" : "end"}
+            className={classes.messageContainer}
+            style={{
+              filter: isContextMenuOpen ? "brightness(50%)" : "none",
+            }}
+          >
+            {isInGroupChat && <Avatar fallback="A" />}
+
+            <MessageContextMenu
+              data={message}
+              setEditMessage={setEditMessage}
+              isMe={isMe}
+            >
+              {message.body ? (
+                <animated.div className={classes.messageBubble}>
+                  <div className={classes.messageText}>
+                    {message.body}
+                    <div className={classes.messageMeta}>
+                      {message.isStarred && (
+                        <animated.div
+                          className={classes.messageStar}
+                          title="Starred Message"
+                        >
+                          <PiStarFill />
+                        </animated.div>
+                      )}
+                      {message.isEdited && (
+                        <Text asChild mr="1">
+                          <i>edited</i>
+                        </Text>
+                      )}
+                      <Text
+                        title={message.createdAt.toLocaleString()}
+                        className={classes.messageDate}
+                      >
+                        {formattedDate}
+                      </Text>
+                      {isMe && (
+                        <p className={classes.messageSeenIndicator}>
+                          {hasSeen ? <RiCheckDoubleFill /> : <RiCheckFill />}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </animated.div>
+              ) : (
+                <animated.div className={classes.messageImageBubble}>
+                  <div className={classes.messageImage}>
+                    <ImageViewer
+                      src={message.image || "/images/placeholder.png"}
+                    />
+                    <div className={classes.messageImageStatus}>
+                      {message.isStarred && (
+                        <animated.div
+                          className={classes.messageStar}
+                          title="Starred Message"
+                        >
+                          <PiStarFill />
+                        </animated.div>
+                      )}
+
+                      <Text
+                        title={message.createdAt.toLocaleString()}
+                        className={classes.messageDate}
+                      >
+                        {formattedDate}
+                      </Text>
+                      {isMe && (
+                        <p className={classes.messageSeenIndicator}>
+                          {hasSeen ? <RiCheckDoubleFill /> : <RiCheckFill />}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </animated.div>
+              )}
+            </MessageContextMenu>
+          </Flex>
+        </Flex>
+      </label>
+    </ContextMenu.Root>
   );
 }
 

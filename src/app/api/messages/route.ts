@@ -72,7 +72,25 @@ export async function POST(request: Request) {
     });
     return NextResponse.json(newMessage);
   } catch (error) {
-    console.log(error, "ERROR_MESSAGES");
+    console.log(error, "ERROR_MESSAGES_POST");
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const body = await request.json();
+    const deleteMessages = await prisma.message.deleteMany({
+      where: {
+        id: {
+          in: body,
+        },
+      },
+    });
+
+    return NextResponse.json(deleteMessages);
+  } catch (error) {
+    console.log(error, "ERROR_MESSAGES_DELETE_MANY");
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

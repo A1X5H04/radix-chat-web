@@ -13,7 +13,7 @@ datasource db {
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
   name           String?
-  bio            String?
+  bio            String?   @default("Hello There, I am using Radix Chat")
   email          String?   @unique
   emailVerified  DateTime?
   image          String?
@@ -70,6 +70,9 @@ model Message {
   image     String?
   createdAt DateTime @default(now())
 
+  isStarred Boolean? @default(false)
+  isEdited  Boolean? @default(false)
+
   seenIds String[] @db.ObjectId
   seen    User[]   @relation("Seen", fields: [seenIds], references: [id])
 
@@ -79,3 +82,5 @@ model Message {
   senderId String @db.ObjectId
   sender   User   @relation(fields: [senderId], references: [id], onDelete: Cascade)
 }
+
+// Custom Models 

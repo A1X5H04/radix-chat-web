@@ -1,4 +1,4 @@
-import UserList from "@/components/UserList";
+import UserList from "@/app/(site)/users/components/UserList";
 import { Flex } from "@radix-ui/themes";
 import getUsers from "@/actions/getUsers";
 import NavLayout from "@/components/navlayout/NavLayout";
@@ -16,7 +16,6 @@ async function UserLayout({ children }: { children: React.ReactNode }) {
         height="100%"
       >
         <UserList users={users} />
-
         {children}
       </Flex>
     </NavLayout>

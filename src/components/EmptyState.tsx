@@ -20,7 +20,7 @@ function EmptyState() {
           sm: "6",
         }}
         style={{
-          backgroundColor: "var(--color-surface-accent)",
+          backgroundColor: "var(--accent-1)",
         }}
       >
         <Flex align="center" direction="column" justify="center">

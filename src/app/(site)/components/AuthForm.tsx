@@ -179,7 +179,10 @@ function AuthForm() {
                 {authType === "login" ? "Register" : "Login"}
               </RadixLink>
             </Text>
-            <Button disabled={isLoading}>
+            <Button
+              disabled={isLoading}
+              onClick={() => setCallOut({ text: "", isError: false })}
+            >
               {authType === "login" ? "Login" : "Register"} to Radix Chat
             </Button>
           </Flex>

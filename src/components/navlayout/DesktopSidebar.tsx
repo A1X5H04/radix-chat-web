@@ -36,17 +36,16 @@ function DesktopSidebar({ currentUser }: { currentUser: User }) {
       }}
       justify="between"
     >
-      {/* <ProfileDialog currentUser={currentUser}>
+      <ProfileDialog currentUser={currentUser}>
         <Box>
+          <Avatar
+            fallback={<RxPerson />}
+            src={currentUser?.image || undefined}
+            mt="4"
+            size="3"
+          />
         </Box>
-      </ProfileDialog> */}
-      <Avatar
-        fallback={<RxPerson />}
-        src={currentUser?.image || undefined}
-        mt="4"
-        radius="full"
-        size="3"
-      />
+      </ProfileDialog>
 
       <Box>
         <ul role="list">
@@ -64,11 +63,11 @@ function DesktopSidebar({ currentUser }: { currentUser: User }) {
         </ul>
       </Box>
       <Flex direction="column" gap="4">
-        {/* <SettingsDialog>
+        <SettingsDialog currentUser={currentUser}>
           <IconButton variant="ghost" size="2" m="2">
             <RxGear />
           </IconButton>
-        </SettingsDialog> */}
+        </SettingsDialog>
         <IconButton onClick={() => signOut()} variant="ghost" size="3" m="2">
           <RxExit />
         </IconButton>

@@ -47,7 +47,7 @@ export async function POST(request: Request, { params }: { params: IParams }) {
     }
 
     // Update seen of last message
-    const updatedMessage = await prisma.message.update({
+    const updatedLastMessage = await prisma.message.update({
       where: {
         id: lastMessage.id,
       },
@@ -65,18 +65,22 @@ export async function POST(request: Request, { params }: { params: IParams }) {
     });
 
     await pusherServer.trigger(currentUser.email, "conversation:update", {
-      conversationId: conversation.id,
-      messages: [updatedMessage],
+      id: conversation.id,
+      messages: [updatedLastMessage],
     });
 
     if (lastMessage.seenIds.indexOf(currentUser.id) !== -1) {
       return NextResponse.json(conversation);
     }
 
-    await pusherServer.trigger(conversationId!, "message:seen", updatedMessage);
+    await pusherServer.trigger(
+      conversationId!,
+      "message:seen",
+      updatedLastMessage
+    );
 
     // Return updated conversation
-    return NextResponse.json(updatedMessage);
+    return NextResponse.json(updatedLastMessage);
   } catch (error) {
     console.log(error, "ERROR_MESSAGES_SEEN");
     return new NextResponse("Error", { status: 500 });

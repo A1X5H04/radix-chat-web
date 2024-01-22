@@ -12,7 +12,6 @@ import {
   TextField,
 } from "@radix-ui/themes";
 import React from "react";
-import EmojiPicker from "./EmojiPicker";
 import { RiAddLine } from "react-icons/ri";
 import { RxPerson } from "react-icons/rx";
 import Input from "./Input";
@@ -27,7 +26,6 @@ interface ProfileDialogProps {
 }
 
 function ProfileDialog({ children, currentUser }: ProfileDialogProps) {
-  const [showEmojiPicker, setShowEmojiPicker] = React.useState(false);
   const { css } = useStyles();
   const {
     register,
@@ -39,6 +37,7 @@ function ProfileDialog({ children, currentUser }: ProfileDialogProps) {
     defaultValues: {
       name: currentUser?.name,
       image: currentUser?.image,
+      bio: currentUser?.bio,
     },
   });
 
@@ -58,12 +57,25 @@ function ProfileDialog({ children, currentUser }: ProfileDialogProps) {
 
         <Flex direction="column" width="100%" gap="3">
           <Flex justify="center">
-            <Box position="relative" m="3" onClick={() => alert("clicked")}>
+            <Box position="relative" m="3">
               <Avatar
                 fallback={<RxPerson size="25" />}
                 src={currentImage || currentUser?.image || undefined}
                 size="6"
               />
+              <IconButton
+                className={css({
+                  position: "absolute",
+                  bottom: 0,
+                  right: "50%",
+                  transform: "translate(50%, 50%)",
+                  cursor: "pointer",
+                })}
+                onClick={handleUpload}
+                size="1"
+              >
+                <RiAddLine />
+              </IconButton>
             </Box>
           </Flex>
           <Input
@@ -76,32 +88,12 @@ function ProfileDialog({ children, currentUser }: ProfileDialogProps) {
           />
           <Box mt="-3">
             <Text size="2" weight="bold">
-              Status
-            </Text>
-            <TextField.Root mt="1">
-              <TextField.Slot>
-                <IconButton
-                  onClick={() => setShowEmojiPicker((prev) => !prev)}
-                  variant="ghost"
-                >
-                  <MdOutlineEmojiEmotions />
-                </IconButton>
-              </TextField.Slot>
-              <TextField.Input
-                {...register("status", { required: true })}
-                id="image"
-                placeholder="Your mood today"
-              />
-            </TextField.Root>
-            <Box position="relative">{showEmojiPicker && <EmojiPicker />}</Box>
-          </Box>
-          <Box mt="-1">
-            <Text size="2" weight="bold">
-              Bio
+              Profile Bio
             </Text>
             <TextArea
-              mt="1"
+              id="bio"
               {...register("bio", { required: true })}
+              mt="1"
               rows={3}
               placeholder="I like to code."
               maxLength={100}
@@ -111,7 +103,7 @@ function ProfileDialog({ children, currentUser }: ProfileDialogProps) {
 
         <Flex gap="3" mt="4" justify="end">
           <Dialog.Close>
-            <Button variant="soft" color="gray">
+            <Button type="button" variant="soft" color="gray">
               Cancel
             </Button>
           </Dialog.Close>

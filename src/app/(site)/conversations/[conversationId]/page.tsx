@@ -5,7 +5,7 @@ import { Flex } from "@radix-ui/themes";
 import React from "react";
 import ChatHeader from "./components/ChatHeader";
 import ChatBody from "./components/ChatBody";
-import ChatInput from "./components/ChatInput";
+import ChatInput from "./components/ChatFooter";
 import ChatScreen from "./components/ChatScreen";
 
 interface Params {

@@ -5,7 +5,6 @@ import "./globals.css";
 import "./radixui-config.css";
 import { NextAppDirEmotionCacheProvider } from "tss-react/next/appDir";
 import { Theme } from "@radix-ui/themes";
-import ToastContext from "../../contexts/ToastContext";
 import { AuthContext } from "../../contexts/AuthContext";
 
 const raleway = Raleway({
@@ -31,13 +30,11 @@ export default function RootLayout({
       </head>
       <body className={raleway.variable}>
         <AuthContext>
-          <ToastContext>
-            <NextAppDirEmotionCacheProvider options={{ key: "css" }}>
-              <Theme accentColor="iris" appearance="dark" radius="medium">
-                {children}
-              </Theme>
-            </NextAppDirEmotionCacheProvider>
-          </ToastContext>
+          <NextAppDirEmotionCacheProvider options={{ key: "css" }}>
+            <Theme accentColor="violet" appearance="dark" radius="medium">
+              {children}
+            </Theme>
+          </NextAppDirEmotionCacheProvider>
         </AuthContext>
       </body>
     </html>

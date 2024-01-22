@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Flex } from "@radix-ui/themes";
+import { AlertDialog, Button, Flex } from "@radix-ui/themes";
 import ChatHeader from "./ChatHeader";
 import ChatBody from "./ChatBody";
-import ChatInput from "./ChatInput";
+import ChatFooter from "./ChatFooter";
 import { tss } from "tss-react";
 import { Conversation, User } from "@prisma/client";
 import { FullMessageType } from "@/types";
@@ -20,7 +20,7 @@ interface ChatScreenProps {
 const chatScreenStyle = tss.create({
   root: {
     backgroundColor: "var(--color-surface-accent)",
-    borderLeft: "1px solid var(--accent-3)",
+    borderLeft: "1px solid var(--gray-5)",
   },
 });
 
@@ -30,20 +30,39 @@ function ChatScreen({
   isInGroup,
 }: ChatScreenProps) {
   const { classes } = chatScreenStyle();
-
+  const [isSelectMode, setIsSelectMode] = useState(false);
+  // const [selectedMessages, setSelectedMessages] = useState([]);
+  const [editMessage, setEditMessage] = useState(null);
   return (
-    <Flex
-      align="center"
-      direction="column"
-      justify="between"
-      width="100%"
-      height="100%"
-      className={classes.root}
-    >
-      <ChatHeader conversation={conversation} />
-      <ChatBody initialMessage={initialMessages} isInGroup={isInGroup} />
-      <ChatInput />
-    </Flex>
+    <AlertDialog.Root>
+      <Flex
+        align="center"
+        direction="column"
+        justify="between"
+        width="100%"
+        height="100%"
+        className={classes.root}
+      >
+        <ChatHeader
+          conversation={conversation}
+          setSelectMode={setIsSelectMode}
+        />
+        <ChatBody
+          initialMessage={initialMessages}
+          isInGroup={isInGroup}
+          selectMode={isSelectMode}
+          setEditMessage={setEditMessage}
+          // setSelectedMessages={setSelectedMessages}
+        />
+        <ChatFooter
+          selectMode={isSelectMode}
+          setSelectMode={setIsSelectMode}
+          editMessage={editMessage}
+          setEditMessage={setEditMessage}
+          // selectedMessagesLength={selectedMessages.length}
+        />
+      </Flex>
+    </AlertDialog.Root>
   );
 }
 

@@ -37,7 +37,8 @@ const styles = tss
       whiteSpace: "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis",
-      maxWidth: "15rem",
+      width: "100%",
+      maxWidth: "16rem",
       color: isSelected ? "var(--gray-11)" : "var(--gray-10)",
       fontWeight: !hasSeen ? 700 : 500,
       fontSize: "calc(12.5px * var(--scaling))",
@@ -66,6 +67,11 @@ function ConversationTile({ data, isSelected }: ConversationTileProps) {
     if (!lastMessage) return false;
     const seenArray = lastMessage.seen || [];
     if (!userEmail) return false;
+    console.log("seenArray", seenArray);
+    console.log(
+      "hasSeen",
+      seenArray.filter((user) => user.email === userEmail).length !== 0
+    );
     return seenArray.filter((user) => user.email === userEmail).length !== 0;
   }, [lastMessage, userEmail]);
 

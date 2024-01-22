@@ -1,14 +1,10 @@
 import React, { useState } from "react";
-import { useSpring, animated } from "@react-spring/web";
+import Image from "next/image";
+import { useTransition, animated } from "@react-spring/web";
 
 function ImageViewer({ src }: { src: string }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
-
-  const animationProps = useSpring({
-    opacity: loaded ? 1 : 0,
-    transform: modalOpen ? "scale(1)" : "scale(0.5)",
-  });
 
   const openModal = () => {
     setModalOpen(true);
@@ -20,7 +16,13 @@ function ImageViewer({ src }: { src: string }) {
 
   return (
     <div>
-      <img src={src} onClick={openModal} alt="Image Viewer" />
+      <Image
+        src={src}
+        width={200}
+        height={250}
+        onClick={openModal}
+        alt="Image Viewer"
+      />
       {modalOpen && (
         <div
           style={{
@@ -32,19 +34,21 @@ function ImageViewer({ src }: { src: string }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            backgroundColor: "rgba(0, 0, 0, 0.95)",
             zIndex: 100,
           }}
+          onContextMenu={(event) => event.stopPropagation()}
           onClick={closeModal}
         >
-          <animated.img
-            style={animationProps}
-            src={src}
-            onLoad={() => setLoaded(true)}
-            alt="Image Viewer"
-            width="50%"
-            height="50%"
-          />
+          <div>
+            <animated.img
+              src={src}
+              onLoad={() => setLoaded(true)}
+              alt="Image Viewer"
+              width="100%"
+              height="100%"
+            />
+          </div>
         </div>
       )}
     </div>
