@@ -1,4 +1,6 @@
 # Radix Chat Web
+⚠️ **Currently in Progress**
+
 
 This is a real-time chat web-app built with Next.js, Prisma, MongoDB, and NextAuth. It uses Radix UI for the design. The application supports one-on-one chats, group chats, and channels. Users can reply to, delete, edit, and forward messages.
 
